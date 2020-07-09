@@ -1,0 +1,6 @@
+﻿Name: Generic Plugin
+Author: John Doe
+Version: 1.0
+Module: RelativityTheory.dll
+Type: GenericPlugin
+Icon: icon.png
