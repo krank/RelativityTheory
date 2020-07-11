@@ -76,13 +76,6 @@ namespace RelativityTheory
                 RelativizeGame(game);
             }
 
-            /* Disabled because it seems to not work
-             * If used, changes are only teporary & will reset when PlayNite is
-             * restarted.
-             */
-            //PlayniteApi.Database.Games.Update(gamesToRelativize);
-
-
             PlayniteApi.Dialogs.ShowMessage("Done.");
         }
 
