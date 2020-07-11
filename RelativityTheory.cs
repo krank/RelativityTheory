@@ -51,15 +51,23 @@ namespace RelativityTheory
 
         public IEnumerable<Game> FilterUnrelativized(IEnumerable<Game> gamesToFilter)
         {
-            IEnumerable<Game> filteredGames = gamesToFilter.Where<Game>((g, b) => g.InstallDirectory.IndexOf(PlayniteApi.Paths.ApplicationPath) == 0);
+            // Return a list of games whose InstallDirectory and/or GameImagePath start with the Playnite install dir
+            return gamesToFilter.Where<Game>(
+                (g, b) =>
+                g.InstallDirectory.IndexOf(PlayniteApi.Paths.ApplicationPath) == 0 ||
+                g.GameImagePath.IndexOf(PlayniteApi.Paths.ApplicationPath) == 0
+            );
 
-            return filteredGames;
         }
 
         public void RelativizeGames(IEnumerable<Game> gamesToRelativize)
         {
 
-            System.Windows.MessageBoxResult result = PlayniteApi.Dialogs.ShowMessage("This will relativize installation & image paths of " + gamesToRelativize.Count() + " games.", "Relativize all thesse games?", System.Windows.MessageBoxButton.OKCancel);
+            System.Windows.MessageBoxResult result = PlayniteApi.Dialogs.ShowMessage(
+                "This will relativize installation & image paths of " + gamesToRelativize.Count() + " games.",
+                "Relativize all thesse games?",
+                System.Windows.MessageBoxButton.OKCancel
+            );
 
             if (result == System.Windows.MessageBoxResult.Cancel) return;
 
@@ -68,7 +76,12 @@ namespace RelativityTheory
                 RelativizeGame(game);
             }
 
-            PlayniteApi.Database.Games.Update(gamesToRelativize);
+            /* Disabled because it seems to not work
+             * If used, changes are only teporary & will reset when PlayNite is
+             * restarted.
+             */
+            //PlayniteApi.Database.Games.Update(gamesToRelativize);
+
 
             PlayniteApi.Dialogs.ShowMessage("Done.");
         }
@@ -77,6 +90,9 @@ namespace RelativityTheory
         {
             game.InstallDirectory = game.InstallDirectory.Replace(PlayniteApi.Paths.ApplicationPath, "{PlayniteDir}");
             game.GameImagePath = game.GameImagePath.Replace(PlayniteApi.Paths.ApplicationPath, "{PlayniteDir}");
+
+            // Updating database for each game relativized
+            PlayniteApi.Database.Games.Update(game);
         }
 
 
